@@ -1,0 +1,53 @@
+package Runner;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import java.util.List;
+
+public class SubscriptionPackageTest {
+    private WebDriver driver;
+
+    @BeforeClass
+    public void setUp() {
+        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
+        driver = new ChromeDriver();
+    }
+
+    @Test
+    public void validateSubscriptionPackages() {
+        driver.get("https://subscribe.stctv.com/sa-en");
+        List<WebElement> packages = driver.findElements(By.cssSelector(".package"));
+
+        for (WebElement pkg : packages) {
+            String type = pkg.findElement(By.cssSelector(".type")).getText();
+            String price = pkg.findElement(By.cssSelector(".price")).getText();
+            String currency = pkg.findElement(By.cssSelector(".currency")).getText();
+            
+            Assert.assertNotNull(type, "Package type should not be null");
+            Assert.assertNotNull(price, "Package price should not be null");
+            Assert.assertNotNull(currency, "Package currency should not be null");
+            System.out.println("Package Type: " + type + ", Price: " + price + ", Currency: " + currency);
+        }
+    }
+
+    @AfterClass
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+
+    public static void main(String[] args) {
+        SubscriptionPackageTest test = new SubscriptionPackageTest();
+        test.setUp();
+        test.validateSubscriptionPackages();
+        test.tearDown();
+    }
+}
